@@ -135,18 +135,33 @@
 		output wire  irq
 	);
 	
-wire  m_aximm_dma_init_axi_txn;
-wire  m_aximm_dma_txn_done;
-wire  m_aximm_dma_error;
+wire  m_aximm_dma_rd_init_axi_txn;
+wire [31:0] m_aximm_dma_rd_txn_src_address;
+wire [7:0] m_aximm_dma_rd_txn_num_burst;
+wire  m_aximm_dma_rd_txn_done;
+wire  m_aximm_dma_rd_error;
+
+wire  m_aximm_dma_wr_init_axi_txn;
+wire [31:0] m_aximm_dma_wr_txn_des_address;
+wire [7:0] m_aximm_dma_wr_txn_num_burst;
+wire  m_aximm_dma_wr_txn_done;
+wire  m_aximm_dma_wr_error;
 
 // Instantiation of Axi Bus Interface S_AXILITE_CSR
 	gmm_processor_v1_0_S_AXILITE_CSR # ( 
 		.C_S_AXI_DATA_WIDTH(C_S_AXILITE_CSR_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S_AXILITE_CSR_ADDR_WIDTH)
 	) gmm_processor_v1_0_S_AXILITE_CSR_inst (
-		.INIT_AXI_TXN(m_aximm_dma_init_axi_txn),
-		.TXN_DONE(m_aximm_dma_txn_done),
-		.ERROR(m_aximm_dma_error),
+		.RD_INIT_AXI_TXN(m_aximm_dma_rd_init_axi_txn),
+		.RD_TXN_SRC_ADDRESS(m_aximm_dma_rd_txn_src_address),
+		.RD_TXN_NUM_BURST(m_aximm_dma_rd_txn_num_burst),
+		.RD_TXN_DONE(m_aximm_dma_rd_txn_done),
+		.RD_ERROR(m_aximm_dma_rd_error),
+		.WR_INIT_AXI_TXN(m_aximm_dma_wr_init_axi_txn),
+		.WR_TXN_DES_ADDRESS(m_aximm_dma_wr_txn_des_address),
+		.WR_TXN_NUM_BURST(m_aximm_dma_wr_txn_num_burst),
+		.WR_TXN_DONE(m_aximm_dma_wr_txn_done),
+		.WR_ERROR(m_aximm_dma_wr_error),
 		.S_AXI_ACLK(s_axilite_csr_aclk),
 		.S_AXI_ARESETN(s_axilite_csr_aresetn),
 		.S_AXI_AWADDR(s_axilite_csr_awaddr),
@@ -183,9 +198,16 @@ wire  m_aximm_dma_error;
 		.C_M_AXI_RUSER_WIDTH(C_M_AXIMM_DMA_RUSER_WIDTH),
 		.C_M_AXI_BUSER_WIDTH(C_M_AXIMM_DMA_BUSER_WIDTH)
 	) gmm_processor_v1_0_M_AXIMM_DMA_inst (
-		.INIT_AXI_TXN(m_aximm_dma_init_axi_txn),
-		.TXN_DONE(m_aximm_dma_txn_done),
-		.ERROR(m_aximm_dma_error),
+		.RD_INIT_AXI_TXN(m_aximm_dma_rd_init_axi_txn),
+		.RD_TXN_SRC_ADDRESS(m_aximm_dma_rd_txn_src_address),
+		.RD_TXN_NUM_BURST(m_aximm_dma_rd_txn_num_burst),
+		.RD_TXN_DONE(m_aximm_dma_rd_txn_done),
+		.RD_ERROR(m_aximm_dma_rd_error),
+		.WR_INIT_AXI_TXN(m_aximm_dma_wr_init_axi_txn),
+		.WR_TXN_DES_ADDRESS(m_aximm_dma_wr_txn_des_address),
+		.WR_TXN_NUM_BURST(m_aximm_dma_wr_txn_num_burst),
+		.WR_TXN_DONE(m_aximm_dma_wr_txn_done),
+		.WR_ERROR(m_aximm_dma_wr_error),
 		.M_AXI_ACLK(m_aximm_dma_aclk),
 		.M_AXI_ARESETN(m_aximm_dma_aresetn),
 		.M_AXI_AWID(m_aximm_dma_awid),

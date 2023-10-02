@@ -15,12 +15,24 @@
 	)
 	(
 		// Users to add ports here
+		
 		// Initiate AXI transactions
-		output wire  INIT_AXI_TXN,
+		output wire  RD_INIT_AXI_TXN,
+		output wire [31:0] RD_TXN_SRC_ADDRESS,
+		output wire [7:0] RD_TXN_NUM_BURST,
 		// Asserts when transaction is complete
-		input wire  TXN_DONE,
+		input wire  RD_TXN_DONE,
 		// Asserts when ERROR is detected
-		input wire  ERROR,
+		input wire  RD_ERROR,
+		
+		// Initiate AXI transactions
+		output wire  WR_INIT_AXI_TXN,
+		output wire [31:0] WR_TXN_DES_ADDRESS,
+		output wire [7:0] WR_TXN_NUM_BURST,
+		// Asserts when transaction is complete
+		input wire  WR_TXN_DONE,
+		// Asserts when ERROR is detected
+		input wire  WR_ERROR,
 		
 		// User ports ends
 		// Do not modify the ports beyond this line
@@ -376,10 +388,10 @@
 	begin
 	      // Address decoding for reading registers
 	      case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
-	        2'h0   : reg_data_out <= {16'd0,7'd0,ERROR,7'd0,TXN_DONE}; //slv_reg0; 
-	        2'h1   : reg_data_out <= slv_reg1;
-	        2'h2   : reg_data_out <= slv_reg2;
-	        2'h3   : reg_data_out <= slv_reg3;
+	        2'h0   : reg_data_out <= slv_reg0; // RD Source Address
+	        2'h1   : reg_data_out <= {7'd0,RD_ERROR,7'd0,RD_TXN_DONE,slv_reg1[15:0]};//slv_reg1;
+	        2'h2   : reg_data_out <= slv_reg2; // WR Destination Address
+	        2'h3   : reg_data_out <= {7'd0,RD_ERROR,7'd0,RD_TXN_DONE,slv_reg3[15:0]};//slv_reg3;
 	        default : reg_data_out <= 0;
 	      endcase
 	end
@@ -404,8 +416,17 @@
 	end    
 
 	// Add user logic here
-	// Initiate AXI transactions
-	assign INIT_AXI_TXN = slv_reg1[0];
+	
+	// Initiate AXI RD transactions
+	assign RD_TXN_SRC_ADDRESS = slv_reg0[31:0];
+	assign RD_TXN_NUM_BURST = slv_reg1[7:0];
+	assign RD_INIT_AXI_TXN = slv_reg1[15];
+	
+	// Initiate AXI WR transactions
+	assign WR_TXN_SRC_ADDRESS = slv_reg2[31:0];
+	assign WR_TXN_NUM_BURST = slv_reg3[7:0];
+	assign WR_INIT_AXI_TXN = slv_reg3[15];
+	
 	// User logic ends
 
 	endmodule
